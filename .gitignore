@@ -1,2 +1,3 @@
 .idea/
 /models/markov/
+/models/lstms/35ep_128x512x3_bypoem.pth
