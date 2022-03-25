@@ -2,3 +2,4 @@
 /models/markov/
 /models/lstms/35ep_128x512x3_bypoem.pth
 src/russian_g2p/
+src/__pycache__/
