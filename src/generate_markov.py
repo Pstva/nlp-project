@@ -112,7 +112,7 @@ def main(args):
             print(stih)
             print()
     else:
-        with open(args.output_file, 'w') as f:
+        with open(args.output_file, 'a') as f:
             csvwriter = csv.writer(f, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for ind, stih in enumerate(stihi):
                 csvwriter.writerow([ind, stih])

@@ -104,11 +104,15 @@ class RhymeSearch:
         # сначала пытаемся найти рифму по ударению
 
         if self.with_accent:
-            rh = list(set(self.rhymes_dict[w1_acc]))
             # если нет рифмующихся слов на первый вид окончания с ударением, переходим ко второму
-            if w1_acc not in self.rhymes_dict or len(rh) == 1:
-                w1_acc = w2_acc
-            if w1_acc in self.rhymes_dict and len(rh) > 1:
+            if w1_acc in self.rhymes_dict:
+                rh = list(set(self.rhymes_dict[w1_acc]))
+                if len(rh) < 2:
+                    if w2_acc not in self.rhymes_dict:
+                        return None
+                    rh = list(set(self.rhymes_dict[w2_acc]))
+
+            if len(rh) > 1:
                 # пытаемся 10 раз найти рифму
                 j = 0
                 while j < 10:
@@ -117,12 +121,16 @@ class RhymeSearch:
                         return rh[choice_ind]
                     j += 1
 
-        rh = list(set(self.rhymes_dict[w1]))
-        # если не вышло или поиск был без ударения, то ищем по окончаниям
-        if w1 not in self.rhymes_dict or len(rh) == 1:
-            w1 = w2
 
-        if w1 in self.rhymes_dict and len(rh) > 1:
+        # если не вышло или поиск был без ударения, то ищем по окончаниям
+        if w1 in self.rhymes_dict:
+            rh = list(set(self.rhymes_dict[w1]))
+            if len(rh) < 2:
+                if w2 not in self.rhymes_dict:
+                    return None
+                rh = list(set(self.rhymes_dict[w2]))
+
+        if len(rh) > 1:
             # пытаемся 10 раз найти рифму
             j = 0
             while j < 10:
