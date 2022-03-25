@@ -57,13 +57,14 @@ class Stihi:
                 # тут модуль часто выдает ошибку ParamError,
                 # что не может сгенерить с таким словом
                 try:
-                    cur_text = self.model.make_sentence_with_start(second_rhyme, strict=False)
+                    cur_text = self.model.make_sentence_with_start(second_rhyme, strict=False,
+                                                                   min_words=3, max_words=8)
                 except:
                     continue
 
             # рандомное предложение
             else:
-                cur_text = self.model.make_sentence()
+                cur_text = self.model.make_sentence(min_words=3, max_words=8)
 
             if cur_text and cur_text.split()[-1] != 'nan':
                 # последнее слово
@@ -73,8 +74,8 @@ class Stihi:
         # не нашли строку
         return None
 
-def main(args):
 
+def main(args):
     # загрузка одной или нескольких марковских моделей
     if len(args.markov_models) > 1:
         models = []
@@ -91,7 +92,7 @@ def main(args):
     text_model.compile(inplace=True)
 
     # загрузка одной или нескольких модели для рифмы
-    rhyme_model = RhymeSearch()
+    rhyme_model = RhymeSearch(with_accent=args.accent)
     rhyme_model.from_json(args.rhyme_models[0])
     for rhyme_path in args.rhyme_models[1:]:
         new_rhyme = RhymeSearch()
@@ -125,5 +126,6 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--lines-generate",  required=False, default=4)
     parser.add_argument("-s", "--rhyme-scheme",  required=False, default='0101')
     parser.add_argument("-o", "--output-file",  required=False, default=None)
+    parser.add_argument("-a", "--accent", required=False, default=False)
     args = parser.parse_args()
     main(args)
