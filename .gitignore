@@ -1,5 +1,5 @@
 .idea/
 /models/markov/
-/models/lstms/35ep_128x512x3_bypoem.pth
+models/lstms/
 src/russian_g2p/
 src/__pycache__/
