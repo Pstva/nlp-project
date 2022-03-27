@@ -45,10 +45,12 @@
 [Оценка генерации предобученной моделью ruGPT2](LM_evaluation.ipynb)
 
 #### Примеры генерации
-[Сгенерированные стихи](data/)
+[Сгенерированные стихи](generated_poems/)
 
-[Сгенерированные стихи с оценкой gpt](data/with_lp/)
+[Сгенерированные стихи с оценкой gpt](generated_poems/with_lp/)
 
+#### Модели
+Все модели доступны по [ссылке](https://drive.google.com/drive/folders/1bX_k1bVUJYpp_0_jouH5CoSNSMgPLxc9?usp=sharing)
 
 
 
