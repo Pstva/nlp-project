@@ -11,9 +11,10 @@ class Stihi:
         self.model = model
         self.rhyme_model = rhyme_model
 
-    def generate_stih(self, lines_n=4, rhyme_scheme='0101'):
+    def generate_stih(self, lines_n=4, rhyme_scheme='0101', vowels_scheme=(8, 8, 8, 8)):
 
         assert lines_n == len(rhyme_scheme)
+        assert lines_n == len(vowels_scheme)
         lines, rhyme_words = [], []
 
         # подсчет для каждой строки индекс рифмованной строки
@@ -34,7 +35,7 @@ class Stihi:
             if last_rhyme_line != -1:
                 end = rhyme_words[pred_rhyme[i]]
             # сгенерированная линия
-            res = self.generate_line(end_word=end)
+            res = self.generate_line(end_word=end, vowels_number=vowels_scheme[i])
             if res is None:
                 return None
 
@@ -43,7 +44,13 @@ class Stihi:
             rhyme_words.append(rhyme_word)
         return lines
 
-    def generate_line(self, end_word=None, n_try=10):
+    def generate_line(self, end_word=None, n_try=15, vowels_number=8):
+        def count_vovels(text):
+            vowels = {'а', 'у', 'о', 'ы', 'и', 'э', 'я', 'ю', 'ё', 'е'}
+            return sum(int(s in vowels) for s in text)
+
+        best_text = None
+        best_vowels_delta = 10000
 
         # n_try раз пытается сгенерировать строку
         for i in range(n_try):
@@ -67,11 +74,19 @@ class Stihi:
                 cur_text = self.model.make_sentence(min_words=3, max_words=8)
 
             if cur_text and cur_text.split()[-1] != 'nan':
-                # последнее слово
-                second_rhyme = cur_text.split()[-1]
-                return cur_text, second_rhyme
+                curr_vowels_number = count_vovels(cur_text)
+                vowels_delta = abs(curr_vowels_number - vowels_number)
+                if vowels_delta < best_vowels_delta:
+                    best_text = cur_text
+                    best_vowels_delta = vowels_delta
+                    if vowels_delta == 0:
+                        break
 
         # не нашли строку
+        if best_text is not None:
+            # последнее слово
+            second_rhyme = best_text.split()[-1]
+            return best_text, second_rhyme
         return None
 
 
@@ -103,9 +118,16 @@ def main(args):
     stihi = []
     stih_generator = Stihi(text_model, rhyme_model)
     while len(stihi) < int(args.number_generate):
-        s = stih_generator.generate_stih(lines_n=args.lines_generate, rhyme_scheme=args.rhyme_scheme)
+        vowels_scheme = [int(el) for el in args.vowels_scheme.split(" ")]
+        s = stih_generator.generate_stih(
+            lines_n=args.lines_generate,
+            rhyme_scheme=args.rhyme_scheme,
+            vowels_scheme=vowels_scheme
+        )
         if s:
             stihi.append(" \n ".join(s))
+            if args.verbose is not None and len(stihi) % args.verbose == 0:
+                print(f"{len(stihi)} done.")
 
     if args.output_file is None:
         for stih in stihi:
@@ -122,10 +144,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-m", "--markov-models", nargs='+', required=True)
     parser.add_argument("-r", "--rhyme-models", nargs='+', required=True)
-    parser.add_argument("-n", "--number-generate",  required=False, default=5)
-    parser.add_argument("-l", "--lines-generate",  required=False, default=4)
-    parser.add_argument("-s", "--rhyme-scheme",  required=False, default='0101')
-    parser.add_argument("-o", "--output-file",  required=False, default=None)
-    parser.add_argument("-a", "--accent", required=False, default=False)
+    parser.add_argument("-n", "--number-generate", required=False, default=5, type=int)
+    parser.add_argument("-l", "--lines-generate", required=False, default=4, type=int)
+    parser.add_argument("-s", "--rhyme-scheme", required=False, default='0101', type=str)
+    parser.add_argument("-v", "--vowels-scheme", required=False, default='8 8 8 8', type=str)
+    parser.add_argument("-o", "--output-file", required=False, default=None)
+    parser.add_argument("-a", "--accent", required=False, default=False, type=bool)
+    parser.add_argument("--verbose", required=False, default=None, type=int)
+
     args = parser.parse_args()
     main(args)
