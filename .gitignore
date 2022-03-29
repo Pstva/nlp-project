@@ -3,3 +3,5 @@
 models/lstms/
 src/russian_g2p/
 src/__pycache__/
+.ipynb_checkpoints/
+
