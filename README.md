@@ -5,7 +5,7 @@
 #### Данные
 [Код для парсинга данных](src/parser_links_stihi.py).
 
-[Команда для запуска скрипта](parse_2000_2022.sh)
+[Команда для запуска скрипта](shell_scripts/parse_2000_2022.sh)
 
 Данные со стихами за 2020-2021 гг лежат в папке [data](data/).
 
@@ -19,16 +19,16 @@
 #### Контроль рифмы
 [Код для подсчета словарей рифма и подбора рифмы](src/search_rhyme.py)
 
-[Команда для запуска скритпа](make_rhyme_jsons.sh)
+[Команда для запуска скритпа](shell_scripts/make_rhyme_jsons.sh)
 
 #### Марковские модели
 [Код для обучения марковских моделей](src/train_markov.py)
 
 [Код для генерации стихов марковскими моделями](src/generate_markov.py)
 
-[Команды для обучения](train_markov.sh)
+[Команды для обучения](shell_scripts/train_markov.sh)
 
-[Команды для генерации](make_markov_examples.sh)
+[Команды для генерации](shell_scripts/make_markov_examples.sh)
 
 #### LSTM
 [Код для подготовки данных для lstm](src/prepare_data_lstm2.py)
@@ -37,7 +37,7 @@
 
 [Код для обучения lstm с предобученными эмбеддингами](src/train_lstm_with_pretrained_emb.py)
 
-[Команды для обучения](train_lstm_full.sh)
+[Команды для обучения](shell_scripts/train_lstm_full.sh)
 
 [Код для генерации стихотворений с помощью lstm](generate_lstm_poems.ipynb)
 
